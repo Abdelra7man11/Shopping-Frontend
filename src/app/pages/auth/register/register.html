@@ -1,0 +1,52 @@
+<div class="main">
+  <section class="signup">
+    <div class="container">
+      <div class="signup-content">
+        <div class="signup-form">
+          <h2 class="form-title">Create Account</h2>
+          <form class="register-form" (ngSubmit)="register()">
+            <div class="form-group">
+              <label for="displayName"><i class="zmdi zmdi-account"></i></label>
+              <input type="text" id="displayName" placeholder="Full Name" [(ngModel)]="registerData.displayName"
+                name="displayName" required />
+            </div>
+
+            <div class="form-group">
+              <label for="userName"><i class="zmdi zmdi-face"></i></label>
+              <input type="text" id="userName" placeholder="Username" [(ngModel)]="registerData.userName"
+                name="userName" required />
+            </div>
+
+            <div class="form-group">
+              <label for="email"><i class="zmdi zmdi-email"></i></label>
+              <input type="email" id="email" placeholder="Email" [(ngModel)]="registerData.email" name="email"
+                required />
+            </div>
+
+            <div class="form-group">
+              <label for="password"><i class="zmdi zmdi-lock"></i></label>
+              <input type="password" id="password" placeholder="Password" [(ngModel)]="registerData.password"
+                name="password" required />
+            </div>
+            <div class="form-group">
+              <label for="password"><i class="zmdi zmdi-lock"></i></label>
+              <input type="password" id="password" placeholder="Password" [(ngModel)]="registerData.confirmPassword"
+                name="password" required />
+            </div>
+
+            <div class="form-group form-button">
+              <button type="submit" class="form-submit"> Sign Up</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="signup-image">
+          <figure>
+            <img src="assets/images/backImg.jpg" alt="No Image" />
+          </figure>
+          <a routerLink="/login" class="signup-image-link">I am already member</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

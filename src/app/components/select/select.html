@@ -1,0 +1,13 @@
+<div class="categories-container">
+  <div class="container">
+    <h3 class="categories-title"><i class="fas fa-list"></i> {{title}} :</h3>
+    <div class="categories-list">
+      <select class="form-control styled-select" (change)="detectChange($event)">
+        <option value="all" data-icon="fas fa-border-all">All</option>
+        <option *ngFor="let option of data" [value]="option" data-icon="fas fa-mobile-alt">
+          {{ option }}
+        </option>
+      </select>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+/* Reset بسيط */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body,
+html {
+  height: 100%;
+  background-color: #f9f9f9;
+}
+
+/* الجزء الرئيسي */
+.main-content {
+  padding: 6rem 2rem 2rem; // عشان الـ header ثابت فوق
+  min-height: calc(100vh - 120px); // الطول الكلي ناقص الفوتر
+}
+
+/* الفوتر */
+.footer {
+  background: #007bff;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  margin-top: auto;
+}

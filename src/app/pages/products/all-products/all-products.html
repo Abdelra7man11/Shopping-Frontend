@@ -1,0 +1,22 @@
+<!-- Select Component -->
+
+<div class="box mt-5">
+  <div class="my-2 w-25">
+    <app-select [data]="categories" [title]="'Categories'" (SelectValue)="filterCategory($event)"></app-select>
+  </div>
+
+  <!-- Product-item Component -->
+
+  <div class="row" *ngIf="!isLoading">
+    @for (item of products; track item.Id) {
+    <div class="col-md-3 col-sm-12">
+      <app-product-item [data]="item" (item)="addToCart($event)"></app-product-item>
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="text-center w-100" *ngIf="isLoading">
+  <app-spinner></app-spinner>
+</div>

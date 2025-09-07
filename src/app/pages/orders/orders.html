@@ -1,0 +1,12 @@
+<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+<div *ngIf="orders.length === 0 && !errorMessage">
+  <p>No orders found.</p>
+</div>
+
+<div *ngFor="let order of orders" class="order-card">
+  <h3>Order ID: {{ order.id }}</h3>
+  <p>Status: {{ order.status }}</p>
+  <p>Total: {{ order.total | currency }}</p>
+  <p>Delivery: {{ order.deliveryMethod }}</p>
+</div>

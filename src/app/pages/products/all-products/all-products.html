@@ -1,22 +1,36 @@
-<!-- Select Component -->
-
-<div class="box mt-5">
-  <div class="my-2 w-25">
-    <app-select [data]="categories" [title]="'Categories'" (SelectValue)="filterCategory($event)"></app-select>
-  </div>
-
-  <!-- Product-item Component -->
-
-  <div class="row" *ngIf="!isLoading">
-    @for (item of products; track item.Id) {
-    <div class="col-md-3 col-sm-12">
-      <app-product-item [data]="item" (item)="addToCart($event)"></app-product-item>
+<div class="container my-5">
+  <!-- Filters -->
+  <div class="row mb-4 g-3">
+    <div class="col-md-3 col-sm-6">
+      <select class="form-select" (change)="onBrandSelect($event)">
+        <option value="">All Brands</option>
+        <option *ngFor="let b of brands" [value]="b.name">{{ b.name }}</option>
+      </select>
     </div>
-    }
+    <div class="col-md-3 col-sm-6">
+      <select class="form-select" (change)="onTypeSelect($event)">
+        <option value="">All Types</option>
+        <option *ngFor="let t of types" [value]="t.name">{{ t.name }}</option>
+      </select>
+    </div>
   </div>
-</div>
 
-<!-- Loading -->
-<div class="text-center w-100" *ngIf="isLoading">
-  <app-spinner></app-spinner>
+  <!-- Products Grid -->
+  <div class="row g-3" *ngIf="!isLoading">
+    <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let item of filteredProducts; trackBy: trackById">
+      <app-product-item [product]="item" (addToBasketEvent)="addToBasket($event.product, $event.quantity)">
+      </app-product-item>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="text-center my-5" *ngIf="isLoading">
+    <app-spinner></app-spinner>
+  </div>
+
+  <!-- No Products Found -->
+  <div class="text-center my-5" *ngIf="!isLoading && filteredProducts.length === 0">
+    <i class="bi bi-exclamation-circle-fill fs-2 text-muted"></i>
+    <p class="text-muted mt-2">No products found for the selected filters.</p>
+  </div>
 </div>

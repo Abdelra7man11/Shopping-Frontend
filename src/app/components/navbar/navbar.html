@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" routerLink="/">Market</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" routerLink="/products">Products</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/baskets">Basket</a></li>
+        <li class="nav-item" *ngIf="isLoggedIn"><a class="nav-link" routerLink="/orders">Orders</a></li>
+
+        <!-- Login/Register يظهروا فقط إذا غير مسجل -->
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link btn btn-outline-primary me-2" routerLink="/register">Register</a>
+        </li>
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link btn btn-outline-success" routerLink="/login">Login</a>
+        </li>
+
+        <!-- Logout يظهر فقط إذا مسجل -->
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

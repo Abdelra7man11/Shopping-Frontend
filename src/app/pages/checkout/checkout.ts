@@ -1,43 +1,72 @@
-import { IAddress } from './../../core/models/address';
+// checkout.component.ts
 import { Component, OnInit } from '@angular/core';
-import { OrdersService } from '../../core/services/order.service';
-import { IDeliveryMethod } from '../../core/models/deliveryMethod';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IBasket } from '../../core/models/basket';
+import { OrderService } from '../../core/services/order.service';
+import { BasketService } from '../../core/services/basket.service';
 import { IOrderToCreate } from '../../core/models/order';
 
 @Component({
   selector: 'app-checkout',
-  imports: [],
+  imports: [FormsModule, CommonModule],
   templateUrl: './checkout.html',
-  styleUrl: './checkout.scss',
+  styleUrls: ['./checkout.scss'],
 })
-export class Checkout implements OnInit {
-  deliveryMethods: IDeliveryMethod[] = [];
-  selectedDeliveryId: number | null = null;
-  basketId = ''; // افترض إنك هتجيبها من service الباسكت
-  shipToAddress!: IAddress;
-  errorMessage = '';
+export class CheckoutComponent implements OnInit {
+  basket?: IBasket;
+  address = { firstName: '', lastName: '', street: '', city: '', country: '' };
+  deliveryMethodId?: number;
+  deliveryMethods: any[] = [];
 
-  constructor(private ordersService: OrdersService) {}
+  constructor(
+    private orderService: OrderService,
+    private basketService: BasketService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.ordersService.getDeliveryMethods().subscribe({
-      next: (res) => (this.deliveryMethods = res),
-      error: () => (this.errorMessage = 'Failed to load delivery methods'),
-    });
+    const basketId = localStorage.getItem('basket_id');
+    if (basketId) {
+      this.basketService
+        .getBasket(basketId)
+        .subscribe((res) => (this.basket = res));
+    }
+    this.orderService
+      .getDeliveryMethods()
+      .subscribe((res) => (this.deliveryMethods = res));
   }
 
-  createOrder(): void {
-    if (!this.selectedDeliveryId) return;
+  getSubtotal(): number {
+    return (
+      this.basket?.items.reduce((sum, x) => sum + x.price * x.quantity, 0) ?? 0
+    );
+  }
+
+  getTotal(): number {
+    const deliveryCost =
+      this.deliveryMethods.find((dm) => dm.id === this.deliveryMethodId)
+        ?.price ?? 0;
+    return this.getSubtotal() + deliveryCost;
+  }
+
+  placeOrder() {
+    if (!this.basket || !this.deliveryMethodId) return;
 
     const order: IOrderToCreate = {
-      basketId: this.basketId,
-      deliveryMethodId: this.selectedDeliveryId,
-      shipToAddress: this.shipToAddress,
+      basketId: this.basket.id,
+      deliveryMethodId: this.deliveryMethodId,
+      shipToAddress: this.address,
     };
 
-    this.ordersService.createOrder(order).subscribe({
-      next: (res) => console.log('Order created:', res),
-      error: (err) => (this.errorMessage = 'Failed to create order'),
+    this.orderService.createOrder(order).subscribe({
+      next: () => {
+        alert('✅ Order placed successfully');
+        localStorage.removeItem('basket_id'); // حذف الباسكت بعد الطلب
+        this.router.navigateByUrl('/orders');
+      },
+      error: (err) => console.error('❌ Error placing order', err),
     });
   }
 }

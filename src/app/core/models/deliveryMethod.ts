@@ -1,7 +1,8 @@
+// delivery-method.model.ts
 export interface IDeliveryMethod {
-    shortName: string;
-    deliveryTime: string;
-    description: string;
-    cost: number;
-    id: number;
+  id: number;
+  shortName: string;
+  description: string;
+  deliveryTime: string;
+  price: number;
 }

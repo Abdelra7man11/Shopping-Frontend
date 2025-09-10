@@ -5,17 +5,16 @@ export interface IOrderToCreate {
   deliveryMethodId: number;
   shipToAddress: IAddress;
 }
-
 export interface IOrder {
-  id: string;
+  id: string; // Guid → string
   buyerEmail: string;
-  orderDate: string;
+  orderDate: string; // DateTimeOffset → string (parse with new Date())
+  items: IOrderItem[];
   shipToAddress: IAddress;
   deliveryMethod: string;
   deliveryCost: number;
-  items: IOrderItem[];
-  subtotal: number;
   status: string;
+  subtotal: number;
   total: number;
 }
 

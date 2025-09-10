@@ -1,7 +1,8 @@
+// address.model.ts
 export interface IAddress {
-  FirstName: string;
-  LastName: string;
+  firstName: string;
+  lastName: string;
   street: string;
-  City: string;
-  Country: string;
+  city: string;
+  country: string;
 }

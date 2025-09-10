@@ -1,52 +1,56 @@
-<div class="main">
-  <section class="signup">
-    <div class="container">
-      <div class="signup-content">
-        <div class="signup-form">
-          <h2 class="form-title">Create Account</h2>
-          <form class="register-form" (ngSubmit)="register()">
-            <div class="form-group">
-              <label for="displayName"><i class="zmdi zmdi-account"></i></label>
-              <input type="text" id="displayName" placeholder="Full Name" [(ngModel)]="registerData.displayName"
-                name="displayName" required />
-            </div>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
+    <h2 class="text-center mb-4 fw-bold">Create Account</h2>
 
-            <div class="form-group">
-              <label for="userName"><i class="zmdi zmdi-face"></i></label>
-              <input type="text" id="userName" placeholder="Username" [(ngModel)]="registerData.userName"
-                name="userName" required />
-            </div>
-
-            <div class="form-group">
-              <label for="email"><i class="zmdi zmdi-email"></i></label>
-              <input type="email" id="email" placeholder="Email" [(ngModel)]="registerData.email" name="email"
-                required />
-            </div>
-
-            <div class="form-group">
-              <label for="password"><i class="zmdi zmdi-lock"></i></label>
-              <input type="password" id="password" placeholder="Password" [(ngModel)]="registerData.password"
-                name="password" required />
-            </div>
-            <div class="form-group">
-              <label for="password"><i class="zmdi zmdi-lock"></i></label>
-              <input type="password" id="password" placeholder="Password" [(ngModel)]="registerData.confirmPassword"
-                name="password" required />
-            </div>
-
-            <div class="form-group form-button">
-              <button type="submit" class="form-submit"> Sign Up</button>
-            </div>
-          </form>
-        </div>
-
-        <div class="signup-image">
-          <figure>
-            <img src="assets/images/backImg.jpg" alt="No Image" />
-          </figure>
-          <a routerLink="/login" class="signup-image-link">I am already member</a>
-        </div>
+    <form (ngSubmit)="register()" #registerForm="ngForm">
+      <!-- Full Name -->
+      <div class="mb-3">
+        <label for="displayName" class="form-label"><i class="bi bi-person-fill"></i> Full Name</label>
+        <input type="text" id="displayName" class="form-control" placeholder="Enter your full name"
+          [(ngModel)]="registerData.displayName" name="displayName" required />
       </div>
+
+      <!-- Username -->
+      <div class="mb-3">
+        <label for="userName" class="form-label"><i class="bi bi-person-circle"></i> Username</label>
+        <input type="text" id="userName" class="form-control" placeholder="Enter username"
+          [(ngModel)]="registerData.userName" name="userName" required />
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label"><i class="bi bi-envelope-fill"></i> Email</label>
+        <input type="email" id="email" class="form-control" placeholder="Enter email" [(ngModel)]="registerData.email"
+          name="email" required />
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="password" class="form-label"><i class="bi bi-lock-fill"></i> Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Enter password"
+          [(ngModel)]="registerData.password" name="password" required />
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="mb-3">
+        <label for="confirmPassword" class="form-label"><i class="bi bi-lock-fill"></i> Confirm Password</label>
+        <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm password"
+          [(ngModel)]="registerData.confirmPassword" name="confirmPassword" required />
+      </div>
+
+      <!-- Submit Button -->
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-box-arrow-in-right"></i> Sign Up
+        </button>
+      </div>
+    </form>
+
+    <!-- Image and link -->
+    <div class="text-center mt-3">
+      <p>
+        <a routerLink="/login" class="text-decoration-none">I am already a member</a>
+      </p>
     </div>
-  </section>
+  </div>
 </div>

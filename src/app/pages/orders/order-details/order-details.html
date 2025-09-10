@@ -1,0 +1,74 @@
+<section class="container py-5">
+  <div *ngIf="order; else notFound" class="card shadow-sm">
+    <div class="card-header bg-light">
+      <h4 class="mb-1">Order Details - {{ order.id }}</h4>
+      <small class="text-muted d-block mb-1">Status: {{ order.status }}</small>
+      <small class="text-muted">Order Date: {{ order.orderDate | date:'medium' }}</small>
+    </div>
+
+    <div class="card-body">
+      <!-- Shipping Address -->
+      <h5 class="fw-bold">Shipping Address</h5>
+      <p>
+        <i class="bi bi-person-fill me-1"></i>
+        {{ order.shipToAddress.firstName }} {{ order.shipToAddress.lastName }}<br>
+        <i class="bi bi-geo-alt-fill me-1"></i>
+        {{ order.shipToAddress.street }}<br>
+        <i class="bi bi-building me-1"></i>
+        {{ order.shipToAddress.city }}, {{ order.shipToAddress.country }}
+      </p>
+
+      <!-- Items List -->
+      <h5 class="fw-bold mt-4">Items</h5>
+      <div class="list-group mb-3">
+        <div class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let item of order.items">
+          <div class="d-flex align-items-center">
+            <img [src]="item.pictureUrl" class="img-thumbnail me-3" style="width:60px;height:60px"
+              alt="{{ item.productName }}">
+            <div>
+              <p class="mb-0">{{ item.productName }}</p>
+              <small class="text-muted">Qty: {{ item.quantity }}</small>
+            </div>
+          </div>
+          <span>{{ item.price * item.quantity }} L.E</span>
+        </div>
+      </div>
+
+      <!-- Delivery & Totals -->
+      <h5 class="fw-bold">Delivery</h5>
+      <p><i class="bi bi-truck me-1"></i>{{ order.deliveryMethod }} - {{ order.deliveryCost }} L.E</p>
+
+      <div class="d-flex justify-content-between">
+        <span>Subtotal:</span>
+        <span>{{ order.subtotal }} L.E</span>
+      </div>
+      <div class="d-flex justify-content-between fw-bold">
+        <span>Total:</span>
+        <span>{{ order.total }} L.E</span>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mt-4">
+        <h6 class="fw-bold">Order Progress</h6>
+        <div class="progress" style="height: 20px;">
+          <div class="progress-bar bg-success" role="progressbar" [style.width.%]="getProgress(order.status)"
+            aria-valuemin="0" aria-valuemax="100">
+            {{ order.status }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer text-end">
+      <a routerLink="/orders" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back to Orders
+      </a>
+    </div>
+  </div>
+
+  <ng-template #notFound>
+    <div class="alert alert-warning text-center">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i> Order not found.
+    </div>
+  </ng-template>
+</section>

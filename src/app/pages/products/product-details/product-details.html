@@ -1,27 +1,37 @@
-<div class="box">
+<div class="container my-5">
 
-  <!-- Loading -->
-  <div class="text-center w-100" *ngIf="isLoading">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center my-5">
     <app-spinner></app-spinner>
   </div>
 
   <!-- Product Details -->
-  <div class="row" *ngIf="!isLoading">
-    <div class="col-md-5 col-sm-12">
-      <img [src]="data.image" alt="{{data.title}}" />
+  <div *ngIf="!isLoading && data" class="row g-4">
+    <!-- Image -->
+    <div class="col-md-5 col-sm-12 text-center">
+      <img [src]="data.pictureUrl" [alt]="data.name" class="img-fluid rounded shadow-sm" style="max-height:400px;">
     </div>
+
+    <!-- Info -->
     <div class="col-md-7 col-sm-12">
-      <div class="info">
-        <ul class="list-unstyled">
-          <li><strong>Title:</strong> {{data.title}}</li>
-          <li><strong>Category:</strong> {{data.category}}</li>
-          <li><strong>Description:</strong> {{data.description}}</li>
-          <li><strong>Rate:</strong> {{data.rating?.rate}}</li>
-          <li><strong>Count:</strong> {{data.rating?.count}}</li>
-          <li><strong>Price:</strong> {{data.price}}</li>
-        </ul>
+      <div class="card shadow-sm p-4">
+        <h4 class="card-title fw-bold mb-3">{{ data.name }}</h4>
+        <p class="card-text mb-2"><strong>Type:</strong> {{ data.productType }}</p>
+        <p class="card-text mb-2"><strong>Brand:</strong> {{ data.productBrand }}</p>
+        <p class="card-text mb-2"><strong>Description:</strong> {{ data.description }}</p>
+        <p class="card-text mb-3"><strong>Price:</strong> {{ data.price | currency:'EGP':'symbol':'1.0-0' }}</p>
+
+        <!-- زر إضافة المنتج للسلة -->
+        <button class="btn btn-primary w-100" (click)="addToBasket(1)">
+          <i class="bi bi-cart-plus me-1"></i> Add to Basket
+        </button>
       </div>
     </div>
+  </div>
+
+  <!-- No Product Found -->
+  <div *ngIf="!isLoading && !data" class="alert alert-warning text-center my-5">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> Product not found.
   </div>
 
 </div>

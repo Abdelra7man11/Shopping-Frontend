@@ -1,0 +1,63 @@
+<div class="container my-5" *ngIf="basket; else noBasket">
+  <div class="row g-4">
+    <!-- Shipping Address -->
+    <div class="col-md-6">
+      <div class="card shadow-sm p-4">
+        <h4 class="fw-bold mb-3">Shipping Address</h4>
+        <form #checkoutForm="ngForm">
+          <input class="form-control mb-2" [(ngModel)]="address.firstName" name="firstName" placeholder="First Name"
+            required>
+          <input class="form-control mb-2" [(ngModel)]="address.lastName" name="lastName" placeholder="Last Name"
+            required>
+          <input class="form-control mb-2" [(ngModel)]="address.street" name="street" placeholder="Street" required>
+          <input class="form-control mb-2" [(ngModel)]="address.city" name="city" placeholder="City" required>
+          <input class="form-control mb-2" [(ngModel)]="address.country" name="country" placeholder="Country" required>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delivery Method & Order Summary -->
+    <div class="col-md-6">
+      <div class="card shadow-sm p-4">
+        <h4 class="fw-bold mb-3">Delivery Method</h4>
+        <select class="form-select mb-3" [(ngModel)]="deliveryMethodId" name="delivery" required>
+          <option *ngFor="let method of deliveryMethods" [value]="method.id">
+            {{ method.description }} - {{ method.price }} L.E
+          </option>
+        </select>
+
+        <h4 class="fw-bold mb-3">Order Summary</h4>
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex justify-content-between align-items-center"
+            *ngFor="let item of basket.items">
+            {{ item.productName }} (x{{ item.quantity }})
+            <span>{{ item.price * item.quantity }} L.E</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            Subtotal
+            <span>{{ getSubtotal() }} L.E</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between fw-bold">
+            Total
+            <span>{{ getTotal() }} L.E</span>
+          </li>
+        </ul>
+
+        <button class="btn btn-success w-100"
+          [disabled]="!checkoutForm.form.valid || !deliveryMethodId || basket.items.length === 0"
+          (click)="placeOrder()">
+          <i class="bi bi-cart-check me-2"></i> Place Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- No Basket -->
+<ng-template #noBasket>
+  <div class="container my-5">
+    <div class="alert alert-warning text-center">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i> No basket found. Please add products to cart first.
+    </div>
+  </div>
+</ng-template>

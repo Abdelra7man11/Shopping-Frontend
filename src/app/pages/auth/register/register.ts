@@ -26,7 +26,7 @@ export class RegisterComponent {
     this.validationErrors = []; // امسح الأخطاء القديمة
     this.authService.register(this.registerData).subscribe({
       next: () => {
-        alert('تم إنشاء الحساب بنجاح');
+        alert('Successfully Register');
         this.router.navigate(['/login']);
       },
       error: (err) => {
@@ -34,7 +34,7 @@ export class RegisterComponent {
         if (err.error?.errors) {
           this.validationErrors = err.error.errors;
         } else {
-          this.validationErrors.push('حدث خطأ أثناء التسجيل');
+          this.validationErrors.push('Error In Register , Tray Again');
         }
       },
     });

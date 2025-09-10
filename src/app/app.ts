@@ -1,17 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Header } from './components/header/header';
-// import { HTTP_INTERCEPTORS } from '@angular/common/http';
-// import { AuthInterceptor } from './core/interceptors/auth-interceptor';
+import { Navbar } from './components/navbar/navbar';
+import { Footer } from './components/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header],
+  imports: [RouterOutlet, Navbar, Footer],
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  // providers: [
-  //   { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-  // ],
 })
 export class App {
   protected readonly title = signal('Shopping-Frontend');

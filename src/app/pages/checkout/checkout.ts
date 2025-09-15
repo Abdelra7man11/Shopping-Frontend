@@ -38,9 +38,27 @@ export class CheckoutComponent implements OnInit {
       .subscribe((res) => (this.deliveryMethods = res));
   }
 
+  changeDeliveryMethod() {
+    console.log(this.deliveryMethodId);
+    let method = this.deliveryMethods.find(
+      (a) => a.id == this.deliveryMethodId
+    );
+    console.log(method);
+  }
+
   getSubtotal(): number {
+    let deliveryCharge = 0;
+    if (this.deliveryMethodId) {
+      let method = this.deliveryMethods.find(
+        (a) => a.id == this.deliveryMethodId
+      );
+      if (method) {
+        deliveryCharge = method.price;
+      }
+    }
     return (
-      this.basket?.items.reduce((sum, x) => sum + x.price * x.quantity, 0) ?? 0
+      (this.basket?.items.reduce((sum, x) => sum + x.price * x.quantity, 0) ??
+        0) + deliveryCharge
     );
   }
 
@@ -63,7 +81,7 @@ export class CheckoutComponent implements OnInit {
     this.orderService.createOrder(order).subscribe({
       next: () => {
         alert('✅ Order placed successfully');
-        localStorage.removeItem('basket_id'); // حذف الباسكت بعد الطلب
+        localStorage.removeItem('basket_id');
         this.router.navigateByUrl('/orders');
       },
       error: (err) => console.error('❌ Error placing order', err),

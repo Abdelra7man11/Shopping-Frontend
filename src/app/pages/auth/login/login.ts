@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private location = inject(Location);
 
   loginData = {
     email: '',
@@ -23,11 +24,10 @@ export class LoginComponent {
     if (!this.loginData.email || !this.loginData.password) {
       return;
     }
-
     this.authService.login(this.loginData).subscribe({
       next: (user) => {
         console.log('✅ Logged in user:', user);
-        this.router.navigate(['/']);
+        this.location.back();
       },
       error: (err) => {
         console.error('❌ Login failed', err);

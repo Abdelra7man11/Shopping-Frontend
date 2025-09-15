@@ -1,14 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  signal,
+  effect,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductService } from '../../../core/services/product.service';
-import { BasketService } from '../../../core/services/basket.service';
 import { Spinner } from '../../../components/spinner/spinner';
 import { ProductItem } from '../product-item/product-item';
+import { ProductService } from '../../../core/services/product.service';
+import { BasketService } from '../../../core/services/basket.service';
 import { IProduct } from '../../../core/models/product';
 import { IBrand } from '../../../core/models/productBrand';
 import { IType } from '../../../core/models/productType';
 import { IBasket } from '../../../core/models/basket';
+
+interface IToast {
+  id: string;
+  message: string;
+  type?: 'success' | 'error' | 'info';
+}
 
 @Component({
   selector: 'app-all-products',
@@ -18,127 +31,119 @@ import { IBasket } from '../../../core/models/basket';
   styleUrls: ['./all-products.scss'],
 })
 export class AllProducts implements OnInit {
-  products: IProduct[] = [];
-  filteredProducts: IProduct[] = [];
+  private productService = inject(ProductService);
+  private basketService = inject(BasketService);
 
-  brands: IBrand[] = [];
-  types: IType[] = [];
+  selectedBrand = signal<number | ''>('');
+  selectedType = signal<number | ''>('');
+  brands = signal<IBrand[]>([]);
+  types = signal<IType[]>([]);
+  basket = signal<IBasket | null>(null);
+  toasts = signal<IToast[]>([]);
 
-  selectedBrand: string = '';
-  selectedType: string = '';
+  pageNumber = 1;
+  pageSize = 10;
 
-  basket?: IBasket;
-  basketKey = '';
-  loadingCount = 0;
+  products = computed(() => this.productService.productsPagination().data);
 
-  constructor(
-    private productService: ProductService,
-    private basketService: BasketService
-  ) {}
+  constructor() {
+    effect(() => {
+      const pagination = this.productService.productsPagination();
+      console.log('Current page:', pagination.pageNumber);
+      console.log('Total items:', pagination.count);
+    });
+  }
 
   ngOnInit(): void {
-    this.getProducts();
     this.getBrands();
     this.getTypes();
+    this.getProducts(this.pageNumber);
 
-    this.basketKey = localStorage.getItem('basket_id') ?? '';
-    if (this.basketKey) {
-      this.basketService.getBasket(this.basketKey).subscribe({
-        next: (res) => (this.basket = res),
+    const basketKey = localStorage.getItem('basket_id');
+    if (basketKey) {
+      this.basketService.getBasket(basketKey).subscribe({
+        next: (res) => this.basket.set(res),
         error: (err) => console.error('Error loading basket ❌', err),
       });
     }
   }
 
-  get isLoading(): boolean {
-    return this.loadingCount > 0;
+  getProducts(pageNumber: number = 1) {
+    this.pageNumber = pageNumber;
+
+    const params: any = {
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
+    };
+
+    if (this.selectedBrand() !== '') params.brandId = this.selectedBrand();
+    if (this.selectedType() !== '') params.typeId = this.selectedType();
+
+    this.productService.getAllProducts(params);
   }
 
-  private startLoading() {
-    this.loadingCount++;
-  }
-
-  private stopLoading() {
-    this.loadingCount = Math.max(0, this.loadingCount - 1);
-  }
-
-  getProducts() {
-    this.startLoading();
-    this.productService.getAllProducts().subscribe({
-      next: (res: any) => {
-        this.products = res.Data;
-        this.filteredProducts = res.Data; // initialize filteredProducts
-        this.stopLoading();
-      },
-      error: (err) => {
-        console.error(err);
-        this.stopLoading();
-      },
-    });
+  get totalPages() {
+    return Math.ceil(
+      this.productService.productsPagination().count / this.pageSize
+    );
   }
 
   getBrands() {
     this.productService.getBrands().subscribe({
-      next: (res: IBrand[]) => (this.brands = res),
+      next: (res) => this.brands.set(res),
       error: (err) => console.error(err),
     });
   }
 
   getTypes() {
     this.productService.getTypes().subscribe({
-      next: (res: IType[]) => (this.types = res),
+      next: (res) => this.types.set(res),
       error: (err) => console.error(err),
-    });
-  }
-
-  filterProducts() {
-    this.filteredProducts = this.products.filter((p) => {
-      const matchBrand = this.selectedBrand
-        ? p.productBrand === this.selectedBrand
-        : true;
-      const matchType = this.selectedType
-        ? p.productType === this.selectedType
-        : true;
-      return matchBrand && matchType;
     });
   }
 
   onBrandSelect(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
-    this.selectedBrand = value;
-    this.filterProducts();
+    this.selectedBrand.set(value ? parseInt(value) : '');
+    this.getProducts(1);
   }
 
   onTypeSelect(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
-    this.selectedType = value;
-    this.filterProducts();
+    this.selectedType.set(value ? parseInt(value) : '');
+    this.getProducts(1);
   }
 
   trackById(index: number, item: IProduct) {
     return item.id;
   }
 
-  // 🔹 إضافة المنتج للسلة
+  get isLoading() {
+    return this.productService.isLoading();
+  }
+
   addToBasket(product: IProduct, quantity: number = 1) {
-    if (!this.basket) {
-      this.basketKey = crypto.randomUUID();
-      localStorage.setItem('basket_id', this.basketKey);
-      this.basket = {
-        id: this.basketKey,
+    if (!this.basket()) {
+      const basketKey = crypto.randomUUID();
+      localStorage.setItem('basket_id', basketKey);
+      this.basket.set({
+        id: basketKey,
         items: [],
         clientSecret: null,
         paymentIntentId: null,
         deliveryMethodId: null,
         shippingPrice: null,
-      };
+      });
     }
 
-    const item = this.basket.items.find((x) => x.id === product.id);
-    if (item) {
-      item.quantity += quantity;
+    const currentBasket = this.basket();
+    if (!currentBasket) return;
+
+    const existingItem = currentBasket.items.find((x) => x.id === product.id);
+    if (existingItem) {
+      existingItem.quantity += quantity;
     } else {
-      this.basket.items.push({
+      currentBasket.items.push({
         id: product.id,
         productName: product.name,
         price: product.price,
@@ -147,9 +152,24 @@ export class AllProducts implements OnInit {
       });
     }
 
-    this.basketService.createOrUpdateBasket(this.basket).subscribe({
-      next: (res) => (this.basket = res),
+    this.basketService.createOrUpdateBasket(currentBasket).subscribe({
+      next: (res) => {
+        this.basket.set(res);
+        this.showToast(
+          `Product: ${product.name} Quantity: (${quantity}) added to basket!`
+        );
+      },
       error: (err) => console.error('❌ Error saving basket', err),
     });
+  }
+
+  showToast(message: string) {
+    const id = crypto.randomUUID();
+    this.toasts.update((prev) => [...prev, { id, message }]);
+    setTimeout(() => this.removeToast(id), 3000);
+  }
+
+  removeToast(id: string) {
+    this.toasts.update((prev) => prev.filter((t) => t.id !== id));
   }
 }

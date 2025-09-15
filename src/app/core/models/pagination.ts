@@ -1,12 +1,12 @@
 export interface IPagination<T> {
-  pageIndex: number;
+  pageNumber: number;
   pageSize: number;
   count: number;
   data: T[];
 }
 
 export class Pagination<T> implements IPagination<T> {
-  pageIndex!: number;
+  pageNumber!: number;
   pageSize!: number;
   count!: number;
   data: T[] = [];

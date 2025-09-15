@@ -20,9 +20,27 @@
         <p class="card-text mb-2"><strong>Brand:</strong> {{ data.productBrand }}</p>
         <p class="card-text mb-2"><strong>Description:</strong> {{ data.description }}</p>
         <p class="card-text mb-3"><strong>Price:</strong> {{ data.price | currency:'EGP':'symbol':'1.0-0' }}</p>
+        <p class="card-text mb-3"><strong>Quantity:</strong></p>
 
-        <!-- زر إضافة المنتج للسلة -->
-        <button class="btn btn-primary w-100" (click)="addToBasket(1)">
+        <!-- Quantity Input Group -->
+        <div class="input-group mb-3" style="max-width: 140px;">
+          <button class="btn btn-outline-secondary" type="button" (mousedown)="isDecrementActive = true"
+            (mouseup)="isDecrementActive = false" (mouseleave)="isDecrementActive = false" (click)="decrement()"
+            [ngClass]="{'btn-primary': isDecrementActive}">
+            <span class="bi bi-dash"></span>
+          </button>
+
+          <input type="number" class="form-control text-center" [(ngModel)]="amount" min="1" />
+
+          <button class="btn btn-outline-secondary" type="button" (mousedown)="isIncrementActive = true"
+            (mouseup)="isIncrementActive = false" (mouseleave)="isIncrementActive = false" (click)="increment()"
+            [ngClass]="{'btn-primary': isIncrementActive}">
+            <span class="bi bi-plus"></span>
+          </button>
+        </div>
+
+        <!-- Add to Basket Button -->
+        <button class="btn btn-primary w-100" (click)="addToBasket()">
           <i class="bi bi-cart-plus me-1"></i> Add to Basket
         </button>
       </div>
@@ -33,5 +51,15 @@
   <div *ngIf="!isLoading && !data" class="alert alert-warning text-center my-5">
     <i class="bi bi-exclamation-triangle-fill me-2"></i> Product not found.
   </div>
+</div>
 
+<!-- Toast container – أعلى الصفحة على اليمين -->
+<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999; pointer-events: none;">
+  <div *ngFor="let toast of toasts()" class="toast show align-items-center text-white bg-success border-0 mb-2"
+    style="pointer-events: auto;">
+    <div class="d-flex">
+      <div class="toast-body">{{ toast.message }}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="removeToast(toast.id)"></button>
+    </div>
+  </div>
 </div>

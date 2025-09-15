@@ -4,23 +4,38 @@
     <div class="col-md-3 col-sm-6">
       <select class="form-select" (change)="onBrandSelect($event)">
         <option value="">All Brands</option>
-        <option *ngFor="let b of brands" [value]="b.name">{{ b.name }}</option>
+        <option *ngFor="let b of brands()" [value]="b.id">{{ b.name }}</option>
       </select>
     </div>
     <div class="col-md-3 col-sm-6">
       <select class="form-select" (change)="onTypeSelect($event)">
         <option value="">All Types</option>
-        <option *ngFor="let t of types" [value]="t.name">{{ t.name }}</option>
+        <option *ngFor="let t of types()" [value]="t.id">{{ t.name }}</option>
       </select>
     </div>
   </div>
 
   <!-- Products Grid -->
   <div class="row g-3" *ngIf="!isLoading">
-    <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let item of filteredProducts; trackBy: trackById">
-      <app-product-item [product]="item" (addToBasketEvent)="addToBasket($event.product, $event.quantity)">
-      </app-product-item>
+    <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let item of products(); trackBy: trackById">
+      <app-product-item [product]="item"
+        (addToBasketEvent)="addToBasket($event.product, $event.quantity)"></app-product-item>
     </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center my-4" *ngIf="totalPages > 1">
+    <button class="btn btn-outline-primary me-1" [disabled]="pageNumber === 1"
+      (click)="getProducts(pageNumber - 1)">Previous</button>
+
+    <button *ngFor="let page of [].constructor(totalPages); let i = index" class="btn me-1"
+      [class.btn-primary]="pageNumber === (i+1)" [class.btn-outline-primary]="pageNumber !== (i+1)"
+      (click)="getProducts(i + 1)">
+      {{ i + 1 }}
+    </button>
+
+    <button class="btn btn-outline-primary ms-1" [disabled]="pageNumber === totalPages"
+      (click)="getProducts(pageNumber + 1)">Next</button>
   </div>
 
   <!-- Loading Spinner -->
@@ -29,8 +44,19 @@
   </div>
 
   <!-- No Products Found -->
-  <div class="text-center my-5" *ngIf="!isLoading && filteredProducts.length === 0">
+  <div class="text-center my-5" *ngIf="!isLoading && products().length === 0">
     <i class="bi bi-exclamation-circle-fill fs-2 text-muted"></i>
     <p class="text-muted mt-2">No products found for the selected filters.</p>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999; pointer-events: none;">
+  <div *ngFor="let toast of toasts()" class="toast show align-items-center text-white bg-success border-0 mb-2"
+    style="pointer-events: auto;">
+    <div class="d-flex">
+      <div class="toast-body">{{ toast.message }}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="removeToast(toast.id)"></button>
+    </div>
   </div>
 </div>

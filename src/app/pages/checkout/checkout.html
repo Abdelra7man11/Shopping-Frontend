@@ -20,7 +20,8 @@
     <div class="col-md-6">
       <div class="card shadow-sm p-4">
         <h4 class="fw-bold mb-3">Delivery Method</h4>
-        <select class="form-select mb-3" [(ngModel)]="deliveryMethodId" name="delivery" required>
+        <select class="form-select mb-3" [(ngModel)]="deliveryMethodId" (ngModelChange)="changeDeliveryMethod()"
+          name="delivery" required>
           <option *ngFor="let method of deliveryMethods" [value]="method.id">
             {{ method.description }} - {{ method.price }} L.E
           </option>

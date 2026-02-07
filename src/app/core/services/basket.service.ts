@@ -10,7 +10,7 @@ export class BasketService {
 
   private basketSource = new BehaviorSubject<IBasket | null>(null);
   basket$ = this.basketSource.asObservable();
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // ✅ Get basket from API
   getBasket(key: string): Observable<IBasket> {

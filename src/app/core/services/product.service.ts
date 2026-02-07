@@ -19,7 +19,7 @@ export class ProductService {
 
   isLoading = signal(false);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllProducts(params: any) {
     this.isLoading.set(true);
@@ -61,11 +61,11 @@ export class ProductService {
     return this.http.get<IProduct>(`${this.apiUrl}/${id}`);
   }
 
-  getBrands() {
+  getBrands(): Observable<IBrand[]> {
     return this.http.get<IBrand[]>(`${this.apiUrl}/brands`);
   }
 
-  getTypes() {
+  getTypes(): Observable<IType[]> {
     return this.http.get<IType[]>(`${this.apiUrl}/types`);
   }
 }

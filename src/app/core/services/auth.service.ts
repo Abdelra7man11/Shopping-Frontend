@@ -27,7 +27,7 @@ export class AuthService {
           this.storage.setItem('user', JSON.stringify(user));
           this.loggedIn.next(true);
         }
-      })
+      }),
     );
   }
 
@@ -39,7 +39,7 @@ export class AuthService {
           this.storage.setItem('user', JSON.stringify(user));
           this.loggedIn.next(true);
         }
-      })
+      }),
     );
   }
 

@@ -8,22 +8,17 @@ import { Notfound } from './components/notfound/notfound';
 import { BasketComponent } from './pages/basket/basket';
 import { Orders } from './pages/orders/order-list/orders';
 import { OrderDetailsComponent } from './pages/orders/order-details/order-details';
-
-import { AuthGuard } from './core/guards/auth.guard'; // تأكد المسار صحيح
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'products', pathMatch: 'full' },
+  { path: '', redirectTo: 'products', pathMatch: 'full' }, // Default Route
   { path: 'products', component: AllProducts },
   { path: 'products/:id', component: ProductDetails },
   { path: 'baskets', component: BasketComponent },
-  { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] }, // محمية
-  { path: 'orders', component: Orders, canActivate: [AuthGuard] }, // محمية
-  {
-    path: 'orders/:id',
-    component: OrderDetailsComponent,
-    canActivate: [AuthGuard],
-  }, // محمية
+  { path: 'checkout', component: CheckoutComponent, canActivate: [AuthGuard] }, // Secure checkout route
+  { path: 'orders', component: Orders, canActivate: [AuthGuard] }, // Secure orders list route
+  { path: 'orders/:id', component: OrderDetailsComponent, canActivate: [AuthGuard], }, // Secure order details route
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '**', component: Notfound }, // صفحة خطأ
+  { path: '**', component: Notfound }, // Not Found Route
 ];
